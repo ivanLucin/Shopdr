@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+<title>Login - ShopDr Admin</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css" />
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+
+</head>
+<body>
+
+	
+	<div class="container-fluid text-center">
+	
+		<div>
+			<a th:href=@{index.html} class="fa-3x"><i class="fas fa-shopping-basket "></i>ShopDr</a>
+		</div>
+		
+		<form th:action="@{/login}" method="post" style="max-width: 350px; margin: 0 auto">
+			<div th:if="${param.error}">
+				<p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
+			</div>
+			<div th:if="${param.logout}">
+				<p class="text-warning">You have been loged out.</p>
+			</div>
+			
+			<div class="border border-secondary rounded p-3">
+				<p>Access to Shopdr Control Panel</p>
+				<p>
+					<input type="email" name="email" class="form-control" placeholder="E-mail" required/>
+				</p>
+				<p>
+					<input type="password" name="password" class="form-control" placeholder="Password" required/>
+				</p>	
+				<p>
+					<input type="checkbox" name="remember-me"/>&nbsp;Remember me
+				</p>
+				<p>
+					<input type="submit" value="Login" class="btn btn-primary"/>
+				</p>	
+			</div>
+		
+		</form>
+		
+		<div>
+			<p>ShopDr Control Panel - Copyright &copy; ShopDr</p>
+		</div>
+	</div>
+</body>
+</html>
