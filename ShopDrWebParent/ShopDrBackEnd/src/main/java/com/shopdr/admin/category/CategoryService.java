@@ -5,21 +5,61 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.shopdr.common.entity.Category;
 
 @Service
+@Transactional
 public class CategoryService {
 
 	@Autowired
 	private CategoryRepository repo;
 	
-	public List<Category> listAll() {
-		List<Category> rootCategories = repo.listRootCategories();
-		return listHierarchicalCategories(rootCategories);
+	public static final int ROOT_CATEGORIES_PER_PAGE = 4;
+	
+	public List<Category> listByPage(CategoryPageInfo pageInfo, int pageNum, String keyword) {
+		Pageable pageable = PageRequest.of(pageNum -1, ROOT_CATEGORIES_PER_PAGE);
+		
+		Page<Category> pageCategories = null;
+		
+		if(keyword != null && !keyword.isEmpty()) {
+			pageCategories = repo.search(keyword, pageable);
+		}
+		else {
+		
+			pageCategories = repo.listRootCategories(pageable);
+		
+		}
+		List<Category> rootCategories = pageCategories.getContent();
+		
+		pageInfo.setTotalElements(pageCategories.getTotalElements());
+		pageInfo.setTotalPages(pageCategories.getTotalPages());
+		
+		if(keyword != null && !keyword.isEmpty()) {
+			
+			List<Category> searchResult = pageCategories.getContent();
+			for(Category category : searchResult) {
+				category.setHasChildren(category.getChildren().size() > 0);
+			}
+			
+			return searchResult;
+
+		}
+		else {
+			return listHierarchicalCategories(rootCategories);
+		}
+		
+		
 	}
+	
+	
 	
 	private List<Category> listHierarchicalCategories(List<Category> rootCategories) {
 		List<Category> hierarchicalCategories = new ArrayList<>();
@@ -138,5 +178,17 @@ public class CategoryService {
 		
 		
 		return "OK";
+	}
+	
+	public void updateCategoryEnabledStatus(Integer id, boolean enabled) {
+		repo.updateEnabledSatus(id, enabled);
+	}
+	
+	public void delete(Integer id) throws CategoryNotFoundException{
+		Long countById = repo.countById(id);
+		if(countById == null || countById == 0) {
+			throw new CategoryNotFoundException("Could not find any category eith ID: " + id);
+		}
+		repo.deleteById(id);
 	}
 }

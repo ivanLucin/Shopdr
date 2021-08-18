@@ -68,7 +68,7 @@
 		
 		<form th:action="@{/categories/save}" method="post" style="max-width: 500px; margin: 0 auto"
 			enctype ="multipart/form-data"
-			onsubmit="return checkUnique(this)"
+			onsubmit="return checkUnique(this);"
 			th:object="${category}" >
 			<input type="hidden" th:field="*{id}"/> 
 			<div class="border border-round-secondary rounded p-3">
@@ -175,7 +175,15 @@ function checkUnique(form) {
 	params = {id: catId, name: catName, alias: catAlias, _csrf: csrfValue};
 	
 	$.post(url, params, function(response) { 
-			alert(response);
+			if(response == "OK") {
+				form.submit();
+			}
+			else if(response == "DuplicateName") {
+				alert('There is another category with the name: ' + catName);
+			}
+			else if(response == "DuplicateAlias") {
+				alert('There is another category with the alias: ' + catAlias);
+			}
 		}).fail(function() {
 			alert('failed');
 		});
