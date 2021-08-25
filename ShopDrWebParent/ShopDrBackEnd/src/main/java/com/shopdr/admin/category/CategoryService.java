@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.shopdr.common.entity.Category;
+import com.shopdr.common.exception.CategoryNotFoundException;
 
 @Service
 @Transactional
@@ -99,6 +100,13 @@ public class CategoryService {
 	}
 	
 	public Category save(Category category) {
+		Category parent = category.getParent();
+		if (parent != null) {
+			String allParentIds = parent.getAllParentIDs() == null ? "-" : parent.getAllParentIDs();
+			allParentIds += String.valueOf(parent.getId()) + "-";
+			category.setAllParentIDs(allParentIds);
+		}
+		
 		return repo.save(category);
 	}
 	

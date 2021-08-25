@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+<title>[[${pageTitle}]]</title>
+
+<link rel="stylesheet" th:href="@{/richtext/richtext.min.css}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css" />
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/style.css}"/>
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/richtext/jquery.richtext.min.js}"></script>
+</head>
+<body>
+
+	
+	<div class="container-fluid">
+	<div th:replace="navigation :: menu"></div>
+	
+		<div>
+			<h2>Manage Products | [[${pageTitle}]]</h2>
+		</div>
+		
+		
+		
+		<form th:action="@{/products/save}" method="post"
+		onsubmit="return checkUnique(this)" 
+		enctype="multipart/form-data"
+			th:object="${product}">
+			
+			<input type="hidden" th:field="*{id}" />
+			<input th:if="${product.category != null}" type="hidden" id="categoryId" th:value="${product.category.id}" />
+				
+			<div>
+				<ul class="nav nav-tabs" id="myTab" role="tablist">
+				  <li class="nav-item">
+				    <a class="nav-link active"  data-toggle="tab" href="#overview" role="tab" >Overview</a>
+				  </li>
+				  <li class="nav-item">
+				    <a class="nav-link"  data-toggle="tab" href="#description" role="tab">Description</a>
+				  </li>
+				  <li class="nav-item">
+				    <a class="nav-link"  data-toggle="tab" href="#images" role="tab">Images</a>
+				  </li>
+				  <li class="nav-item">
+				    <a class="nav-link"  data-toggle="tab" href="#details" role="tab">Details</a>
+				  </li>
+				  <li class="nav-item">
+				    <a class="nav-link"  data-toggle="tab" href="#shipping" role="tab">Shipping</a>
+				  </li>
+				</ul>
+				
+				
+				<div class="tab-content">
+				  <div class="tab-pane active p-3" id="overview" role="tabpanel" >
+				  <div th:replace="Products/product_overview :: content"></div>
+				  </div>
+				  <div class="tab-pane" id="description" role="tabpanel" >
+				  
+				  <th:block sec:authorize="hasAnyAuthority('Salesperson')">
+				  <div th:replace="Products/product_details_read_only :: content"></div>
+				  </th:block>
+				  
+				  <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+				  <div th:replace="Products/product_description :: content"></div>
+					</th:block>
+				  </div>
+				  <div class="tab-pane" id="images" role="tabpanel" >
+				  <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+				  <div th:replace="Products/product_images :: content"></div>
+				  </th:block>
+				  
+				  
+				  </div>
+				  <div class="tab-pane p-3" id="details" role="tabpanel" >
+				  
+				  <th:block sec:authorize="hasAnyAuthority('Salesperson')">
+				  <div th:replace="Products/product_details_read_only :: content"></div>
+				  </th:block>
+				  
+				   <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+				  <div th:replace="Products/product_details :: content"></div>
+				  </th:block>
+				  
+				  	<input type="button" class="btn btn-secondary" value="Add More Detail" onclick="addNextDetailSection()" />
+				  </div>
+				  <div class="tab-pane p-3" id="shipping" role="tabpanel" >
+				  	<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+				  	<div th:replace="Products/product_shipping :: content"></div>
+				  	</th:block>
+				  </div>
+				</div>
+			</div>
+			
+			<div class="text-center">
+					<input type="submit" value="save" class="btn btn-primary m-3"/>
+					<input type="button" value="Cancel" class="btn btn-secondary" id="buttonCancel"/>
+				</div>
+			
+			
+		</form>
+		
+		
+		<div class="text-center">
+			<p>ShopDr Control Panel - Copyright &copy; ShopDr</p>
+		</div>
+		
+	</div>
+	
+	
+<script type="text/javascript">
+	MAX_FILE_SIZE = 502400;
+	moduleURL = "[[@{/products}]]";
+	brandModuleURL = "[[@{/brands}]]";
+	defaultImageThumbnailSrc = "[[@{/images/image-thumbnail.png}]]";
+	CheckUniqueUrl ="[[@{/products/check_unique}]]";
+
+	
+	
+	
+</script>
+<script th:src="@{/js/common_form.js}"></script>
+<script th:src="@{/js/product_form_overview.js}"></script>
+<script th:src="@{/js/product_form_images.js}"></script>
+<script th:src="@{/js/product_form_details.js}"></script>
+</body>
+</html>

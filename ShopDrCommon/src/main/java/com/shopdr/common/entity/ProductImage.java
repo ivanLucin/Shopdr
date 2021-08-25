@@ -39,6 +39,7 @@ public class ProductImage  {
 	}
 
 	
+
 	public ProductImage(String name, Product product) {
 		
 		this.name = name;
@@ -61,6 +62,16 @@ public class ProductImage  {
 		this.product = product;
 	}
 	
+	
+	
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	@Transient
 	public String getImagePath() {
 		return "/product-images/" + product.getId() + "/extras/" + this.name;

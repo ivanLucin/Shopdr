@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -33,11 +34,15 @@ public class Category {
 	
 	private boolean enabled;
 	
+	@Column(name = "all_parent_ids", length = 256, nullable = false)
+	private String allParentIDs;
+	
 	@OneToOne
 	@JoinColumn(name = "parent_id")
 	private Category parent;
 	
 	@OneToMany(mappedBy = "parent")
+	@OrderBy("name asc")
 	private Set<Category> children = new HashSet<>();
 
 	
@@ -185,6 +190,16 @@ public class Category {
 	public String toString() {
 		return this.name;
 	}
+
+	public String getAllParentIDs() {
+		return allParentIDs;
+	}
+
+	public void setAllParentIDs(String allParentIDs) {
+		this.allParentIDs = allParentIDs;
+	}
+	
+	
 	
 	
 	
