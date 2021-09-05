@@ -1,8 +1,11 @@
 package com.shopdr.admin.order;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -11,11 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.shopdr.admin.paging.PagingAndSortingHelper;
-import com.shopdr.admin.paging.PagingAndSortingParama;
+
 import com.shopdr.admin.security.ShopdrUserDetails;
 import com.shopdr.admin.setting.SettingService;
 import com.shopdr.common.entity.Order;
+
 
 @Controller
 public class OrderController {
@@ -25,22 +28,40 @@ public class OrderController {
 	@Autowired private SettingService settingService;
 
 	@GetMapping("/orders")
-	public String listFirstPage() {
-		return defaultRedirectURL;
+	public String listFirstPage(Model model) {
+		return listByPage(model, 1, "customer", "asc", null);
 	}
 	
 	@GetMapping("/orders/page/{pageNum}")
-	public String listByPage(
-			@PagingAndSortingParama(listName = "listOrders", moduleURL = "/orders") PagingAndSortingHelper helper,
+	public String listByPage(Model model,
 			@PathVariable(name = "pageNum") int pageNum,
-			@AuthenticationPrincipal ShopdrUserDetails loggedUser) {
+			@Param("sortField") String sortField,
+			@Param("sortDir") String sortDir,
+			@Param("keyword") String keyword) {
 
-		orderService.listByPage(pageNum, helper);
+		Page<Order> page = orderService.listByPage(pageNum, sortField, sortDir, keyword);
+		List<Order> listOrders = page.getContent();
 		
+		long startCount = (pageNum - 1) * OrderService.ORDERS_PER_PAGE + 1;
+		model.addAttribute("startCount", startCount);
 		
-		if (!loggedUser.hasRole("Admin") && !loggedUser.hasRole("Salesperson") && loggedUser.hasRole("Shipper")) {
-			return "orders/orders_shipper";
+		long endCount = startCount + OrderService.ORDERS_PER_PAGE - 1;
+		if (endCount > page.getTotalElements()) {
+			endCount = page.getTotalElements();
 		}
+		
+		model.addAttribute("currentPage", pageNum);
+		model.addAttribute("totalPages", page.getTotalPages());
+		model.addAttribute("startCount", startCount);
+		model.addAttribute("endCount", endCount);
+		model.addAttribute("totalItems", page.getTotalElements());
+		model.addAttribute("listOrders", listOrders);
+		model.addAttribute("sortField", sortField);
+		model.addAttribute("sortDir", sortDir);
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+		model.addAttribute("moduleURL", "/orders");
+		
 		
 		return "orders/orders";
 	}

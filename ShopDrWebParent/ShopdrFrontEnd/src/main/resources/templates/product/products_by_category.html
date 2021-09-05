@@ -8,7 +8,7 @@
 		<div th:replace="breadcrumb :: content"></div>
 		
 		
-		<div class="row text-center">
+		<div class="row text-center mb-3">
 		<th:block th:each="cat : ${category.children}">
 		<div class="col" th:if="${cat.enabled == true}">
 		<a th:href="@{'/c/' + ${cat.alias}}">
@@ -21,7 +21,7 @@
 	</div>
 		
 		<div class="row">&nbsp;</div>
-		<div class="row">
+		<div class="row mb-4">
 		<th:block th:each="product : ${listProducts}">
 		<div th:replace="product/product_fragment :: content"></div>	
 		</th:block>

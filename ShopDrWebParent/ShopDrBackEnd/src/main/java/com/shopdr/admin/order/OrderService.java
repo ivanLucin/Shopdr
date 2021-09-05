@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.shopdr.admin.paging.PagingAndSortingHelper;
 import com.shopdr.admin.setting.country.Countryrepository;
 import com.shopdr.common.entity.Country;
 import com.shopdr.common.entity.Order;
@@ -18,36 +17,28 @@ import com.shopdr.common.entity.Order;
 @Service
 public class OrderService {
 
-private static final int ORDERS_PER_PAGE = 10;
+public static final int ORDERS_PER_PAGE = 10;
 	
 	@Autowired private OrderRepository orderRepo;
 	@Autowired private Countryrepository countryRepo;
 	
-	public void listByPage(int pageNum, PagingAndSortingHelper helper) {
-		String sortField = helper.getSortField();
-		String sortDir = helper.getSortDir();
-		String keyword = helper.getKeyword();
+	public Page<Order> listByPage(int pageNum, String sortField, String sortDir, String keyword) {
 		
-		Sort sort = null;
+		Sort sort = Sort.by(sortField);
 		
 		if ("destination".equals(sortField)) {
 			sort = Sort.by("country").and(Sort.by("state")).and(Sort.by("city"));
-		} else {
-			sort = Sort.by(sortField);
-		}
+		} 
 		
 		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
 		Pageable pageable = PageRequest.of(pageNum - 1, ORDERS_PER_PAGE, sort);
 		
-		Page<Order> page = null;
 		
 		if (keyword != null) {
-			page = orderRepo.findAll(keyword, pageable);
-		} else {
-			page = orderRepo.findAll(pageable);
-		}
+			return orderRepo.findAll(keyword, pageable);
+		} 
 		
-		helper.updateModelAttributes(pageNum, page);		
+		return orderRepo.findAll(pageable);		
 	}
 	
 	public Order get(Integer id) throws OrderNotFoundException {
