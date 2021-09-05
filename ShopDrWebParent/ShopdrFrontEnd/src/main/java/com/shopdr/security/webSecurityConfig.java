@@ -19,11 +19,25 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class webSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	
+	@Bean
+	public PasswordEncoder passwordencoder() {
+		return new BCryptPasswordEncoder();
+	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().anyRequest().permitAll();
+		http.authorizeRequests().antMatchers("/account_details", "/update_account_details","/orders/**",
+				"/cart", "/address_book/**", "/checkout", "/place_order").authenticated()
+		.anyRequest().permitAll()
+		.and()
+		.formLogin()
+		.loginPage("/login")
+		.usernameParameter("email")
+		.permitAll()
+		.and()
+		.logout().permitAll()
+		.and()
+		.rememberMe();
 		
 	
 	}
@@ -32,6 +46,21 @@ public class webSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/images/**", "/js/**", "/webjars/**");
 	}
+	
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return new CustomerUserDetailService();
+	}
+	
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+
+		authProvider.setUserDetailsService(userDetailsService());
+		authProvider.setPasswordEncoder(passwordencoder());
+
+		return authProvider;
+	}	
 	
 	
 	

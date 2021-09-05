@@ -36,7 +36,7 @@ public class Product {
 	@Column(unique = true, length = 256, nullable = false)
 	private String alias;
 	
-	@Column(length = 512, nullable = false, name = "short_description")
+	@Column(length = 1024, nullable = false, name = "short_description")
 	private String shortDescription;
 	
 	@Column(length = 4096, nullable = false, name = "full_description")
@@ -82,6 +82,17 @@ public class Product {
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductDetail> details = new ArrayList<>();
 	
+	
+	public Product() {
+		
+	}
+	
+	public Product(int id) {
+		this.id=id;
+	}
+
+
+
 	public Integer getId() {
 		return id;
 	}
@@ -311,8 +322,11 @@ public class Product {
 	
 	@Transient
 	public float getDiscountPrice() {
+		float discountPrice = price * ((100 - discountPercent) / 100);
+		double round = Math.round(discountPrice*100.0)/100.0;
 		if (discountPercent > 0) {
-			return price * ((100 - discountPercent) / 100);
+			
+			return (float) round;
 		}
 		return this.price;
 	}

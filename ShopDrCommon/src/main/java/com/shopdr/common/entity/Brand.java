@@ -26,7 +26,6 @@ public class Brand {
 	private String name;
 	
 	@Column(nullable = false, length = 128)
-
 	private String logo;
 	
 	@ManyToMany
@@ -94,7 +93,7 @@ public class Brand {
 	public String getLogoPath() {
 		if(this.id == null) return "/images/image-thumbnail.png";
 		
-		return "brand-logos/" + this.id + "/" + this.logo;
+		return "/brand-logos/" + this.id + "/" + this.logo;
 	}
 	
 	

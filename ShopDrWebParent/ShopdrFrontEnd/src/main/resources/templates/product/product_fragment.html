@@ -19,9 +19,22 @@
 					<del><span>$ [[${product.price}]]</span></del>
 				</div>
 			
+			
 		</div>
-
+		</div>
+		
+<div th:fragment="product_price" th:remove="tag">
+		
+		<th:block th:if="${product.discountPercent &lt;= 0}">
+					<span>$ [[${product.price}]]</span>
+				</th:block>
+				<th:block th:if="${product.discountPercent > 0}">
+					<span style="font-size: Large; color: darkred">$ [[${product.discountPrice}]]</span>
+					<del><span>$ [[${product.price}]]</span></del>
+				</th:block>
 </div>
+
+
 
 </body>
 </html>

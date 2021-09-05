@@ -57,42 +57,58 @@
 				  <div class="tab-pane active p-3" id="overview" role="tabpanel" >
 				  <div th:replace="Products/product_overview :: content"></div>
 				  </div>
-				  <div class="tab-pane" id="description" role="tabpanel" >
 				  
-				  <th:block sec:authorize="hasAnyAuthority('Salesperson')">
-				  <div th:replace="Products/product_details_read_only :: content"></div>
-				  </th:block>
-				  
-				  <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+				  <div class="tab-pane" id="description" role="tabpanel" >		
+				  	<th:block th:if="${isReadOnlySalesperson}">				  	
+				  		<div th:replace="Products/product_description_read_only :: content"></div>
+				  	</th:block>
+								  
+				  <th:block th:unless="${isReadOnlySalesperson}">
 				  <div th:replace="Products/product_description :: content"></div>
-					</th:block>
-				  </div>
+				</th:block>
+				 </div>
+				  
 				  <div class="tab-pane" id="images" role="tabpanel" >
-				  <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
-				  <div th:replace="Products/product_images :: content"></div>
+				  	<th:block th:if="${isReadOnlySalesperson}">	
+				  	<div th:replace="Products/product_images_read_only :: content"></div>
+				  	</th:block>
+				  
+				  
+				 <th:block th:unless="${isReadOnlySalesperson}">
+				  	<div th:replace="Products/product_images :: content"></div>				  
 				  </th:block>
 				  
 				  
 				  </div>
 				  <div class="tab-pane p-3" id="details" role="tabpanel" >
+				  	<th:block th:if="${isReadOnlySalesperson}">
+				  		<div th:replace="Products/product_details_read_only :: content"></div>
+				  	</th:block>
 				  
-				  <th:block sec:authorize="hasAnyAuthority('Salesperson')">
-				  <div th:replace="Products/product_details_read_only :: content"></div>
-				  </th:block>
 				  
-				   <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+				   <th:block th:unless="${isReadOnlySalesperson}">
 				  <div th:replace="Products/product_details :: content"></div>
-				  </th:block>
+				  
 				  
 				  	<input type="button" class="btn btn-secondary" value="Add More Detail" onclick="addNextDetailSection()" />
+				  
+				  </th:block>
 				  </div>
+				  
 				  <div class="tab-pane p-3" id="shipping" role="tabpanel" >
-				  	<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+				  	<th:block th:if="${isReadOnlySalesperson}">
+				  		<div th:replace="Products/product_shipping_read_only :: content"></div>
+				  	</th:block>
+				 
+				  
+				  
+				  	<th:block th:unless="${isReadOnlySalesperson}">
 				  	<div th:replace="Products/product_shipping :: content"></div>
 				  	</th:block>
 				  </div>
 				</div>
 			</div>
+			
 			
 			<div class="text-center">
 					<input type="submit" value="save" class="btn btn-primary m-3"/>
@@ -121,6 +137,7 @@
 	
 	
 </script>
+<script th:src="@{/js/common.js}"></script>
 <script th:src="@{/js/common_form.js}"></script>
 <script th:src="@{/js/product_form_overview.js}"></script>
 <script th:src="@{/js/product_form_images.js}"></script>

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shopdr.common.entity.Setting;
+import com.shopdr.common.entity.SettingCategory;
 
 @Service
 public class SettingService {
@@ -19,4 +20,14 @@ public class SettingService {
 	public void saveAll(Iterable<Setting> settings) {
 		repo.saveAll(settings);
 	}
+	
+	public List<Setting> getMailServerSettings() {
+		return repo.findByCategory(SettingCategory.MAIL_SERVER);
+	}
+	
+	public List<Setting> getMailTemplatesSettings() {
+		return repo.findByCategory(SettingCategory.MAIL_TEMPLATES);
+	}
+	
+	
 }

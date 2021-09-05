@@ -30,14 +30,6 @@ public class BrandController {
 	@Autowired
 	private CategoryService categoryService;
 	
-	/*@GetMapping("/brands")
-	public String listAll(Model model) {
-		List<Brand> listBrands = service.listAll();
-		model.addAttribute("listBrands", listBrands);
-		
-		return "brands";
-	}*/
-	
 	@GetMapping("/brands")
 	public String listFirstPage(Model model) {
 		return listByPage(1, model, null);
@@ -62,6 +54,7 @@ public class BrandController {
 		model.addAttribute("totalItems", page.getTotalElements());
 		model.addAttribute("listBrands", listBrands);
 		model.addAttribute("keyword", keyword);
+		model.addAttribute("moduleURL", "/brands");
 		
 		return "brands";
 		

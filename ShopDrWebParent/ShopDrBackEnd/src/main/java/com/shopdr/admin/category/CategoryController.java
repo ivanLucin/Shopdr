@@ -53,6 +53,7 @@ public class CategoryController {
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("startCount", startCount);
 		model.addAttribute("endCount", endCount);
+		model.addAttribute("moduleURL", "/categories");
 		
 		return "categories";
 	}
@@ -125,7 +126,7 @@ public class CategoryController {
 		return "redirect:/categories";
 	}
 	
-	@GetMapping("/categoris/delete/{id}")
+	@GetMapping("/categories/delete/{id}")
 	public String deleteCategory(@PathVariable(name = "id") Integer id, Model model, RedirectAttributes redirectAttributes) {
 		try {
 			service.delete(id);

@@ -90,6 +90,7 @@ public String newProduct(Model model) {
 		model.addAttribute("listProducts", listProducts);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("listCategories", listCategories);
+		model.addAttribute("moduleURL", "/products");
 		
 		return "Products/products";
 		
@@ -106,11 +107,13 @@ public String newProduct(Model model) {
 			@RequestParam(name = "imageNames", required = false) String[] imageNames,
 			@AuthenticationPrincipal ShopdrUserDetails loggedUser) throws IOException {
 		
-		if(loggedUser.hasRole("Salesperson")) {
+		if(!loggedUser.hasRole("Admin") && !loggedUser.hasRole("Editor")) {
+			if(loggedUser.hasRole("Salesperson")) {
 			productService.saveProductPrice(product);
 			
 			ra.addFlashAttribute("message", "The product has been saved successfully.");
 			return "redirect:/products";
+			}
 		}
 		
 		ProductSaveHelper.setMainImageName(mainImageMultipart, product);
@@ -164,13 +167,21 @@ public String newProduct(Model model) {
 	
 	@GetMapping("/products/edit/{id}")
 	public String editProduct(@PathVariable("id") Integer id, Model model,
-			RedirectAttributes ra) {
+			RedirectAttributes ra, @AuthenticationPrincipal ShopdrUserDetails loggedUser) {
 		try {
 			Product product = productService.get(id);
 			List<Brand> listBrands = brandService.listAll();
 			Integer numberOfExistingExtraImages = product.getImages().size();
 			
+			boolean isReadOnlySalesperson = false;
 			
+			if(!loggedUser.hasRole("Admin") && !loggedUser.hasRole("Editor")) {
+				if(loggedUser.hasRole("Salesperson")) {
+					isReadOnlySalesperson = true;
+				}
+			}
+				
+			model.addAttribute("isReadOnlySalesperson", isReadOnlySalesperson);
 			model.addAttribute("product", product);
 			model.addAttribute("listBrands", listBrands);
 			model.addAttribute("pageTitle", "Edit Product (ID: " + id + ")");

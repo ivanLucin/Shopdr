@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+<title>Customers - ShopDr Admin</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css" />
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/style.css}"/>
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<div class="container-fluid">
+	<div th:replace="navigation :: menu"></div>
+	<div>
+		<h2>Manage Shipping Rates</h2>	
+		
+		<a th:href="@{/shipping_rates/new}" class="fas fa-folder-plus fa-2x icon-dark mr-2"></a>
+	</div>
+		
+	<div th:replace="fragments :: search_form_and_message"></div>
+	
+	<div>
+		<table class="table table-bordered table-striped table-hover table-responsive-xl">
+			<thead class="thead-dark">
+				<tr>
+					<th>ID</th>
+					<th>Country</th>
+					<th>State</th>
+					<th>Rate</th>
+					<th>Days</th>
+					<th>COD supported</th>
+					
+					<th></th>
+				</tr>								
+			</thead>
+			<tbody>
+				<tr th:each="rate : ${listShippingRates}">
+					<td>[[${rate.id}]]</td>
+					<td>[[${rate.country.name}]]</td>
+					<td>[[${rate.state}]]</td>
+					<td>[[${rate.rate}]]</td>
+					<td>[[${rate.days}]]</td>
+					<td>
+						<div th:replace="shipping_rates/shipping_rates_fragment :: cod_support" />
+					</td>
+					<td>
+						<div th:replace="fragments :: edit('shipping rate', '/shipping_rates/edit/' + ${rate.id})" />
+						&nbsp; 
+						<div th:replace="fragments :: delete('shipping rate', ${rate.id}, '/shipping_rates/delete/' + ${rate.id}, true)" />						
+					</td>					
+				</tr>
+			</tbody>
+		</table>
+	</div>
+		
+	
+	<div th:replace="fragments :: pagination('shipping rates')"></div>
+	<div th:replace="modal_fragments :: confirm_modal" />
+	<div th:replace="fragments :: footer"></div>
+	
+</div>
+	
+<script th:src="@{/js/common_list.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+<script type="text/javascript">
+	moduleURL = "[[@{/shipping_rates}]]";
+
+	$(document).ready(function() {
+		$(".link-delete").on("click", function(e) {
+			e.preventDefault();
+			showDeleteConfirmModal($(this), 'shipping rate');
+		});
+	});
+</script>
+</body>
+</html>

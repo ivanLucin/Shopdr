@@ -1,6 +1,6 @@
 package com.shopdr.common.entity;
 
-import java.beans.Transient;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "categories")
@@ -34,7 +35,7 @@ public class Category {
 	
 	private boolean enabled;
 	
-	@Column(name = "all_parent_ids", length = 256, nullable = false)
+	@Column(name = "all_parent_ids", length = 256, nullable = true)
 	private String allParentIDs;
 	
 	@OneToOne
@@ -175,7 +176,7 @@ public class Category {
 		return "/category-images/" + this.id + "/" + this.image;
 	}
 	
-	@javax.persistence.Transient
+	@Transient
 	private boolean hasChildren;
 	
 	public boolean isHasChildren() {

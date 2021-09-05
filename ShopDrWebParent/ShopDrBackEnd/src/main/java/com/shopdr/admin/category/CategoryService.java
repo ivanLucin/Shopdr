@@ -20,10 +20,12 @@ import com.shopdr.common.exception.CategoryNotFoundException;
 @Transactional
 public class CategoryService {
 
+	public static final int ROOT_CATEGORIES_PER_PAGE = 5;
+	
 	@Autowired
 	private CategoryRepository repo;
 	
-	public static final int ROOT_CATEGORIES_PER_PAGE = 4;
+	
 	
 	public List<Category> listByPage(CategoryPageInfo pageInfo, int pageNum, String keyword) {
 		Pageable pageable = PageRequest.of(pageNum -1, ROOT_CATEGORIES_PER_PAGE);
@@ -95,7 +97,7 @@ public class CategoryService {
 			
 			hierarchicalCategories.add(Category.copyFull(subCategory, name));
 			
-			listSubHierarchicalCategories(hierarchicalCategories, subCategory, newSubLevel + 1);
+			listSubHierarchicalCategories(hierarchicalCategories, subCategory, newSubLevel);
 		}
 	}
 	

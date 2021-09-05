@@ -50,7 +50,7 @@ public class UserController {
 		model.addAttribute("endCount", endCount);
 		model.addAttribute("totalItems", page.getTotalElements());
 		model.addAttribute("listUsers", listUsers);
-		model.addAttribute("keyword", keyword);
+		model.addAttribute("moduleURL", "/users");
 		
 		return "users";
 		
