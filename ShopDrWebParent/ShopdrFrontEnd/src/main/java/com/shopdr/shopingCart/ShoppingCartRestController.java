@@ -54,7 +54,6 @@ public class ShoppingCartRestController {
 		try {
 			Customer customer = getAuthenticatedCustomer(request);
 			float subtotal = cartService.updateQuantity(productId, quantity, customer);
-			
 			return String.valueOf(subtotal);
 		} catch (CustomerNotFoundException ex) {
 			return "You must login to change quantity of product.";

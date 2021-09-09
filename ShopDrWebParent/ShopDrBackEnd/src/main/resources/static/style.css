@@ -3,3 +3,26 @@
 *.icon-green{color: green}
 *.icon-dark {color: gray}
 *.icon-red {color: red}
+
+*.bg-dark {
+    background: #333;
+    color: #fff;
+}
+
+*.container {
+    margin:auto;
+    max-width: 1100px;
+    overflow: auto;
+    padding: 0 20px;
+}
+
+*.box {
+    float: left;
+    width: 33.3%;
+    padding: 50px;
+    text-align: center;
+}
+
+*.box i {
+    margin-bottom: 10px;
+}

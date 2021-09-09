@@ -54,13 +54,8 @@ public class Utility {
 	
 	public static String formatCurrency(float amount) {
 		
-		
 		String pattern = "###,###.##";
-		
-		
-		
-		
-		
+
 		DecimalFormat formatter = new DecimalFormat(pattern);
 		
 		return formatter.format(amount);
